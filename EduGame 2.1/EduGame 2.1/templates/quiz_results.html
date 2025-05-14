@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% block title %}Resultados - EduGame{% endblock %}
+{% block content %}
+    <!-- Sección de resultados: Muestra el rendimiento del usuario en el cuestionario y cualquier recompensa obtenida. -->
+    <div class="container">
+        <!-- Logotipo: Mantiene la coherencia de la marca. -->
+        <img src="{{ url_for('static', filename='images/edugame_logo.png') }}" alt="EduGame Results Logo" class="welcome-logo">
+        <!-- Título: Celebra la finalización del cuestionario con un ícono de trofeo. -->
+        <h1><i class="fas fa-trophy"></i> ¡Cuestionario Completado!</h1>
+        <!-- Puntaje: Muestra el puntaje bruto del usuario y el total de puntos posibles. -->
+        <p id="score-display" class="score-display">Tu puntaje: 0/{{ total }}</p>
+        <!-- Porcentaje: Calcula y muestra el puntaje como porcentaje, redondeado a dos decimales. -->
+        <p>Porcentaje: {{ (score / total * 100)|round(2) }}%</p>
+        <!-- Insignia: Muestra condicionalmente si el usuario ganó una insignia, con un ícono de trofeo para destacar. -->
+        {% if badge %}
+            <div class="badge">
+                <i class="fas fa-trophy"></i>
+                <p>¡Has ganado la insignia: <strong>{{ badge }}</strong>!</p>
+            </div>
+        {% endif %}
+        <!-- Botones de navegación: Ofrece opciones para volver a la selección de cuestionarios o reiniciar el mismo cuestionario. -->
+        <div class="buttons">
+            <!-- Botón de regreso: Enlaza a la página de selección de cuestionarios. -->
+            <a href="{{ url_for('cuestionarios') }}" class="button"><i class="fas fa-arrow-left"></i> Volver a Cuestionarios</a>
+            <!-- Formulario de reinicio: Envía una solicitud POST para reiniciar el cuestionario con la misma materia y nivel. -->
+            <form method="POST" action="{{ url_for('cuestionarios', materia=materia, nivel=nivel) }}" class="reset-form">
+                <input type="hidden" name="action" value="reset">
+                <input type="hidden" name="materia" value="{{ materia }}">
+                <input type="hidden" name="nivel" value="{{ nivel }}">
+                <button type="submit" class="button"><i class="fas fa-redo"></i> Reiniciar Cuestionario</button>
+            </form>
+        </div>
+    </div>
+    <!-- Script para animación de conteo ascendente del puntaje -->
+    <script>
+        let score = {{ score }};
+        let total = {{ total }};
+        let displayScore = 0;
+        let scoreElement = document.getElementById('score-display');
+        let interval = setInterval(() => {
+            if (displayScore >= score) {
+                clearInterval(interval);
+                scoreElement.textContent = `Tu puntaje: ${score}/${total}`;
+                return;
+            }
+            displayScore += Math.ceil(score / 20); // Incrementa gradualmente
+            scoreElement.textContent = `Tu puntaje: ${displayScore}/${total}`;
+        }, 50);
+    </script>
+    <!-- Efecto de confeti: Activa una animación de celebración si el usuario obtiene un 90% o más, usando la librería canvas-confetti. -->
+    {% if percentage >= 90 %}
+        <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+        <script>
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+        </script>
+    {% endif %}
+{% endblock %}

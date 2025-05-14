@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block title %}Sobre Nosotros - EduGame{% endblock %}
+{% block content %}
+    <!-- Sección de información: Muestra detalles sobre la misión y propósito de la plataforma. -->
+    <div class="container">
+        <!-- Logotipo: Refuerza la marca en la parte superior de la página. -->
+        <img src="{{ url_for('static', filename='images/edugame_logo.png') }}" alt="EduGame About Logo" class="welcome-logo">
+        <!-- Título: Usa un ícono para distinguir visualmente la sección. -->
+        <h1><i class="fas fa-info-circle"></i> Sobre Nosotros</h1>
+        <!-- Descripción: Explica los objetivos de la plataforma y anima a la participación de los usuarios. -->
+        <p>EduGame es una plataforma educativa creada para estudiantes. Nuestra misión es hacer el aprendizaje divertido y accesible a través de cuestionarios interactivos y recursos educativos.</p>
+        <p>¡Únete a nuestra comunidad y descubre una nueva forma de aprender!</p>
+        <!-- Botón de acción: Enlaza a la página de inicio para facilitar la navegación. -->
+        <a href="{{ url_for('index') }}" class="button"><i class="fas fa-home"></i> Volver al Inicio</a>
+    </div>
+{% endblock %}

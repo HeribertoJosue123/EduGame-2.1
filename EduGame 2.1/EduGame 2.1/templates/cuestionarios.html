@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+{% block title %}Cuestionarios - EduGame{% endblock %}
+{% block content %}
+    <!-- Sección de cuestionarios: Permite a los usuarios seleccionar y responder preguntas de un cuestionario interactivo. -->
+    <div class="container">
+        <!-- Título: Introduce la sección con un ícono de signo de interrogación. -->
+        <h1><i class="fas fa-question-circle"></i> ¡Pon a prueba lo que sabes!</h1>
+        <!-- Formulario de selección: Permite elegir la materia y el nivel, enviando automáticamente la selección para actualizar la página. -->
+        <form method="GET" action="{{ url_for('cuestionarios') }}" class="selection-form">
+            <label for="materia">Selecciona una materia:</label>
+            <select id="materia" name="materia" onchange="this.form.submit()">
+                {% for materia in materias %}
+                    <option value="{{ materia }}" {% if materia == selected_materia %}selected{% endif %}>
+                        {{ materia|capitalize }}
+                    </option>
+                {% endfor %}
+            </select>
+            <label for="nivel">Selecciona el nivel:</label>
+            <select id="nivel" name="nivel" onchange="this.form.submit()">
+                {% for nivel in niveles %}
+                    <option value="{{ nivel }}" {% if nivel == selected_nivel %}selected{% endif %}>
+                        {{ nivel|capitalize }}
+                    </option>
+                {% endfor %}
+            </select>
+        </form>
+        <!-- Subtítulo: Muestra la materia y nivel seleccionado -->
+        <h2>
+            {% if selected_materia == 'matematicas' %}
+                <i class="fas fa-calculator"></i>
+            {% elif selected_materia == 'lenguaje' %}
+                <i class="fas fa-book"></i>
+            {% elif selected_materia == 'historia' %}
+                <i class="fas fa-landmark"></i>
+            {% elif selected_materia == 'ciencias' %}
+                <i class="fas fa-flask"></i>
+            {% elif selected_materia == 'cultura general' %}
+                <i class="fas fa-globe"></i>
+            {% endif %}
+            {{ selected_materia|capitalize }} - Nivel {{ selected_nivel|capitalize }}
+        </h2>
+        <!-- Información de progreso: Muestra el puntaje actual y el número de pregunta actual frente al total. -->
+        <p>Puntaje actual: {{ score }}</p>
+        <p>Pregunta {{ question_number }} de {{ total_questions }}</p>
+        <!-- Barra de progreso: Representa visualmente el avance en el cuestionario como un porcentaje. -->
+        <div class="progress-bar">
+            <div style="width: {{ (question_number / total_questions * 100)|round(2) }}%;"></div>
+        </div>
+        <!-- Formulario de cuestionario: Presenta la pregunta actual y sus opciones, enviando la respuesta al servidor. -->
+        <form method="POST" class="quiz-form" data-correct="{{ quiz.correct }}">
+            <input type="hidden" name="materia" value="{{ selected_materia }}">
+            <input type="hidden" name="nivel" value="{{ selected_nivel }}">
+            <input type="hidden" name="question_id" value="{{ quiz.id }}">
+            <p>{{ quiz.question }}</p>
+            {% for option in quiz.options %}
+                <label class="quiz-option">
+                    <input type="radio" name="answer" value="{{ option }}" required>
+                    <span>{{ option }}</span>
+                </label>
+            {% endfor %}
+            <!-- Botón de enviar: Envía la respuesta con un ícono de verificación y un spinner para indicar procesamiento. -->
+            <button type="submit" class="button" id="submit-btn"><i class="fas fa-check"></i> Responder <i class="fas fa-spinner fa-spin" style="display: none;"></i></button>
+        </form>
+        <!-- Script de interacción: Maneja la presentación de la respuesta, mostrando retroalimentación visual (correcto/incorrecto) antes de enviar el formulario. -->
+        <script>
+            document.querySelector('.quiz-form').addEventListener('submit', (e) => {
+                e.preventDefault(); // Prevenir envío inmediato
+                const btn = document.querySelector('#submit-btn');
+                const spinner = btn.querySelector('.fa-spinner');
+                const selected = document.querySelector('input[name="answer"]:checked');
+                
+                // Verificar si se seleccionó una opción
+                if (!selected) {
+                    alert('Por favor, selecciona una respuesta antes de continuar.');
+                    return;
+                }
+
+                // Desactivar botón y mostrar spinner
+                btn.disabled = true;
+                spinner.style.display = 'inline-block';
+
+                // Depuración: Registrar el valor de data-correct
+                const dataCorrect = document.querySelector('.quiz-form').dataset.correct;
+                console.log('Valor de data-correct:', dataCorrect);
+
+                // Usar data-correct directamente (es una cadena simple, no requiere JSON.parse)
+                const correct = dataCorrect;
+
+                // Verificar si correct está definido
+                if (typeof correct === 'undefined' || correct === null) {
+                    console.error('Error: data-correct no está definido o es nulo');
+                    alert('Error en la configuración de la pregunta. Enviando respuesta al servidor.');
+                    spinner.style.display = 'none';
+                    btn.disabled = false;
+                    e.target.submit(); // Enviar formulario como respaldo
+                    return;
+                }
+
+                // Aplicar estilos de retroalimentación
+                const label = selected.parentElement;
+                label.classList.add(selected.value === correct ? 'correct' : 'incorrect');
+
+                // Esperar 1 segundo para mostrar la animación
+                setTimeout(() => {
+                    label.classList.remove('correct', 'incorrect');
+                    spinner.style.display = 'none';
+                    btn.disabled = false;
+                    e.target.submit(); // Enviar formulario
+                }, 1000);
+            });
+        </script>
+    </div>
+{% endblock %}

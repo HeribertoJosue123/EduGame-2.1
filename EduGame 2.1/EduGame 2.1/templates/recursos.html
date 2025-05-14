@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}Recursos - EduGame{% endblock %}
+{% block content %}
+    <!-- Sección de recursos: Muestra una colección de materiales educativos para varias materias. -->
+    <div class="container">
+        <!-- Título: Introduce la página de recursos con un ícono de libro. -->
+        <h1><i class="fas fa-book-open"></i> Recursos Educativos</h1>
+        <!-- Descripción: Anima a los usuarios a explorar los materiales disponibles. -->
+        <p>Explora materiales para apoyar tu aprendizaje en diferentes materias de forma ordenada.</p>
+        <!-- Cuadrícula de recursos: Organiza los recursos en un diseño de tarjetas para facilitar la navegación. -->
+        <div class="resource-grid">
+            <!-- Tarjeta de recurso: Matemáticas -->
+            <div class="resource-card" data-materia="matematicas">
+                <h3>Matemáticas con Daniel Carreon</h3>
+                <p>Aprende conceptos fundamentales con ejercicios prácticos.</p>
+                <a href="https://youtube.com/@danielcarreon?si=gw-A2xSDnd1tv9TX" class="button" target="_blank">Ver Recurso</a>
+            </div>
+            <!-- Tarjeta de recurso: Ciencias -->
+            <div class="resource-card" data-materia="ciencias">
+                <h3>Ciencias de la Ciencia</h3>
+                <p>Explora experimentos y conceptos científicos.</p>
+                <a href="https://www.youtube.com/@CienciasdelaCiencia" class="button" target="_blank">Ver Recurso</a>
+            </div>
+            <!-- Tarjeta de recurso: Historia -->
+            <div class="resource-card" data-materia="historia">
+                <h3>Historia con Academia Play</h3>
+                <p>Repasa eventos históricos clave.</p>
+                <a href="https://www.youtube.com/@academiaplay/videos" class="button" target="_blank">Ver Recurso</a>
+            </div>
+            <!-- Tarjeta de recurso: Lenguaje -->
+            <div class="resource-card" data-materia="lenguaje">
+                <h3>Lenguaje con Infolibros</h3>
+                <p>Mejora tu gramática y vocabulario.</p>
+                <a href="https://www.youtube.com/@Infolibros/videos" class="button" target="_blank">Ver Recurso</a>
+            </div>
+        </div>
+        <!-- Contenedor para el botón de Volver al Inicio -->
+        <div class="button-container">
+            <a href="{{ url_for('index') }}" class="button"><i class="fas fa-home"></i> Volver al Inicio</a>
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <!-- Etiquetas meta: Configuran la codificación de caracteres, el viewport para diseño responsivo y metadatos SEO para motores de búsqueda. -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="EduGame: Plataforma educativa con cuestionarios interactivos para estudiantes.">
+    <meta name="keywords" content="educación, cuestionarios, aprendizaje, matemáticas, ciencias">
+    <!-- Bloque de título: Permite que las plantillas hijas sobrescriban el título de la página mientras se añade ' - EduGame' para la marca. -->
+    <title>{% block title %}{% endblock %} - EduGame</title>
+    <!-- Hoja de estilos externa: Carga los íconos de Font Awesome para elementos de la interfaz. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Hoja de estilos local: Enlaza al archivo CSS personalizado para estilizar el sitio. -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Barra de navegación: Proporciona navegación global con características de accesibilidad. -->
+    <nav class="navbar" aria-label="Navegación principal">
+        <!-- Logotipo: Enlaza a la página de inicio e incluye una imagen para la marca. -->
+        <a href="{{ url_for('index') }}" class="logo" aria-label="Página de inicio de EduGame">
+            <img src="{{ url_for('static', filename='images/edugame_logo.png') }}" alt="EduGame Logo" class="logo-image">
+        </a>
+        <!-- Botón de hamburguesa: Activa/desactiva el menú móvil para navegación responsiva. -->
+        <button class="hamburger" aria-label="Abrir menú">☰</button>
+        <!-- Enlaces de navegación: Lista de enlaces a las secciones principales del sitio, con aria-current para accesibilidad que indica la página activa. -->
+        <ul class="nav-links" id="nav-links">
+            <li><a href="{{ url_for('index') }}" aria-current="{% if request.endpoint == 'index' %}page{% endif %}">Inicio</a></li>
+            <li><a href="{{ url_for('recursos') }}" aria-current="{% if request.endpoint == 'recursos' %}page{% endif %}">Recursos</a></li>
+            <li><a href="{{ url_for('cuestionarios') }}" aria-current="{% if request.endpoint == 'cuestionarios' %}page{% endif %}">Cuestionarios</a></li>
+            <li><a href="{{ url_for('contacto') }}" aria-current="{% if request.endpoint == 'contacto' %}page{% endif %}">Contacto</a></li>
+            <li><a href="{{ url_for('sobre_nosotros') }}" aria-current="{% if request.endpoint == 'sobre_nosotros' %}page{% endif %}">Sobre Nosotros</a></li>
+        </ul>
+    </nav>
+    <!-- Área de contenido principal: Contiene mensajes flash y el bloque de contenido para plantillas hijas. -->
+    <main>
+        <!-- Mensajes flash: Muestra mensajes temporales (por ejemplo, éxito, error) del backend con estilos según la categoría. -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="container flash-container">
+                    {% for category, message in messages %}
+                        <div class="flash {{ category }}">{{ message }}</div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+        <!-- Bloque de contenido: Espacio reservado para el contenido específico de cada página definido en las plantillas hijas. -->
+        {% block content %}{% endblock %}
+    </main>
+    <!-- Pie de página: Muestra el logotipo del sitio y el aviso de derechos de autor para la marca y fines legales. -->
+    <footer class="footer">
+        <img src="{{ url_for('static', filename='images/edugame_logo.png') }}" alt="EduGame Footer Logo" class="footer-logo">
+        © 2025 EduGame. Todos los derechos reservados.
+    </footer>
+    <!-- Script de menú hamburguesa: Alterna la clase 'active' en los enlaces de navegación para mostrar/ocultar el menú móvil. -->
+    <script>
+        document.querySelector('.hamburger').addEventListener('click', () => {
+            document.querySelector('#nav-links').classList.toggle('active');
+        });
+    </script>
+    <!-- Script de Cloudflare: Añade un script de plataforma de desafío para seguridad (por ejemplo, protección contra bots). Se inyecta dinámicamente y se ejecuta después de cargar el DOM. -->
+    <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'93942368ba71adb3',t:'MTc0NjE1MzQ2My4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script>
+</body>
+</html>
